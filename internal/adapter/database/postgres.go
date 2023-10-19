@@ -2,26 +2,19 @@ package database
 
 import (
 	"fmt"
-	"os"
 
-	"github.com/joho/godotenv"
+	"github.com/iki-rumondor/init-golang-service/internal/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func NewPostgresDB() (*gorm.DB, error) {
-	if err := godotenv.Load(); err != nil {
+
+	env, err := utils.GetDatabaseEnv()
+	if err != nil{
 		return nil, err
 	}
-
-	dbHost := os.Getenv("DB_HOST")
-	dbPort := os.Getenv("DB_PORT")
-	dbUser := os.Getenv("DB_USER")
-	dbPassword := os.Getenv("DB_PASSWORD")
-	dbName := os.Getenv("DB_NAME")
-	sslMode := "disable"
-
-	strConn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname%s sslmode=%s", dbHost, dbPort, dbUser, dbPassword, dbName, sslMode)
+	strConn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname%s sslmode=%s", env["host"], env["port"], env["user"], env["password"], env["name"], env["sslmode"])
 
 	gormDB, err := gorm.Open(postgres.Open(strConn), &gorm.Config{})
 	if err != nil {
