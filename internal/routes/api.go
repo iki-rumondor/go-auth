@@ -8,6 +8,8 @@ import (
 func StartServer(handler *customHTTP.Handlers) *gin.Engine{
 	router := gin.Default()
 
+	router.GET("/")
+
 	api := router.Group("api/v1")
 	{
 		api.GET("/endpoints")

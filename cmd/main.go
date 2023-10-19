@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	gormDB, err := database.NewPostgresDB()
+	gormDB, err := database.NewMysqlDB()
 	if err != nil{
 		log.Fatal(err.Error())
 		return
