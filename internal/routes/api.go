@@ -3,20 +3,21 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	customHTTP "github.com/iki-rumondor/init-golang-service/internal/adapter/http"
+	"github.com/iki-rumondor/init-golang-service/internal/middleware"
 )
 
-func StartServer(handler *customHTTP.Handlers) *gin.Engine{
+func StartServer(handlers *customHTTP.Handlers) *gin.Engine {
 	router := gin.Default()
 
-	router.GET("/")
-
-	api := router.Group("api/v1")
+	public := router.Group("api/v1")
 	{
-		api.GET("/endpoints")
-		api.POST("/endpoints")
-		api.GET("/endpoints:id")
-		api.PUT("/endpoints/:id")
-		api.DELETE("/endpoints/:id")
+		public.POST("/register", handlers.AuthHandler.Register)
+		public.POST("/login", handlers.AuthHandler.Login)
+	}
+
+	users := router.Group("api/v1/users").Use(middleware.ValidateHeader(), middleware.IsAdmin())
+	{
+		users.GET("/", handlers.AuthHandler.GetUsers)
 	}
 
 	return router
